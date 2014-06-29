@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-
+//#include "HelloWorldScene.h"
+#include "scenes/GamePlayScene.h"
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -13,6 +13,11 @@ AppDelegate::~AppDelegate()
 
 bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
+
+	 //Load all spritesheets
+	CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(
+				"sprites/heroSheetNew.plist");
+
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
@@ -27,7 +32,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    //auto scene = HelloWorld::createScene();
+    auto scene = GamePlayScene::createScene();
 
     // run
     director->runWithScene(scene);
