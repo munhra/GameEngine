@@ -7,14 +7,7 @@
 
 #include "/Users/munhra/MunhraGames/MyGame/Classes/sprites/HeroSprite.h"
 
-const float GRAVITY_Y = -1500.0;
-const float MOVE_FORCE = 2500.0;
-const float JUMP_FORCE = 850.0; // old 700
-const float JUMP_CUT_OFF = 1400.0;
-const float VELOCITY_FACTOR = 0.90; // old 0.90
-
 const int weaponleftx = 2;
-
 const int weaponrightx = -4;
 const int weaponrighty = 20;
 const int weaponlefty = 20;
@@ -28,8 +21,12 @@ const int anchorleftx = 135;
 const int anchorlefty = 117;
 const int armwidth = 250;
 const int armheight = 124;
+const int heroPositionX = 360;
+const int heroPositionY = 640;
+const int heroBodyPositionX =0;
+const int heroBodyPositionY = 0;
 
-
+const float SPRITE_SCALE_FACTOR = 0.55;
 
 HeroSprite::HeroSprite() {
 	// TODO Auto-generated constructor stub
@@ -44,8 +41,8 @@ HeroSprite* HeroSprite::create()
 {
 	HeroSprite *hero = new HeroSprite();
 	if (hero && hero->init()) {
-		hero->createHeroArm();
 		hero->createHeroBody();
+		hero->createHeroArm();
 		hero->autorelease();
 		return hero;
 	}
@@ -65,11 +62,11 @@ void HeroSprite::createHeroBody()
 	CCString *itemFrame = CCString::create("rash_frm");
 	CCLOG("%s",itemFrame->getCString());
 	for (int i = 1; i <= 4; i++) {
-		CCLOG("Creating framename with name %s\n", itemFrame);
+		CCLOG("Creating framename with name %s\n", itemFrame->getCString());
 		CCString* framename = CCString::createWithFormat("%s%d.png", itemFrame->getCString(), i);
 		CCLOG("Frame name %s", framename->getCString());
 		animFrames.pushBack(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(
-								framename->getCString()));
+				framename->getCString()));
 	}
 
 	CCLOG("Setting animation");
@@ -80,13 +77,66 @@ void HeroSprite::createHeroBody()
 
 	this->addChild(this->heroBodySprite);
 
-	CCLOG("End createHeroBody");
+	this->heroBodySprite->setScale(SPRITE_SCALE_FACTOR);
+	this->setPosition(ccp(heroPositionX, heroPositionY));
+	this->heroBodySprite->setPosition(ccp(heroBodyPositionX,heroBodyPositionY));
 
+	this->hero_weaponLeftx = heroPositionX + weaponleftxipad;
+	this->hero_weaponRightx = heroPositionX + weaponrightxipad;
+	this->hero_weaponyLeft = heroPositionY + weaponleftyipad;
+	this->hero_weaponyRight = heroPositionY + weaponrightyipad;
+
+	CCLOG("End createHeroBody");
 }
 
 void HeroSprite::createHeroArm()
 {
 	CCLOG("Create Hero Arm");
+
+	this->heroArmSprite = CCSprite::create();
+
+	Vector<SpriteFrame*> animFrames;
+
+	CCString *itemFrame = CCString::create("rash_arm_frm");
+
+	CCLOG("%s",itemFrame->getCString());
+	for (int i = 1; i <= 4; i++) {
+		CCLOG("Creating arm framename with name %s\n", itemFrame->getCString());
+		CCString* framename = CCString::createWithFormat("%s%d.png", itemFrame->getCString(), i);
+		CCLOG("Frame name %s", framename->getCString());
+		animFrames.pushBack(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(
+				framename->getCString()));
+	}
+
+	CCLOG("Setting arm animation");
+	CCAnimation *animation = CCAnimation::createWithSpriteFrames(animFrames,0.09f,1);
+
+	this->heroArmAnim = CCRepeatForever::create(CCAnimate::create(animation));
+	this->heroArmSprite->runAction(this->heroArmAnim);
+	CCLOG("Scalling arm sprite");
+	this->heroArmSprite->setScale(SPRITE_SCALE_FACTOR);
+
+
+	CCPoint anchorLeft = this->calculateAnchorPoint(ccp(anchorleftx, anchorlefty),ccp(armheight,armwidth));
+	CCPoint anchorRight = this->calculateAnchorPoint(ccp(anchorrightx, anchorrighty),ccp(armheight,armwidth));
+	CCLOG("Set anchor points");
+
+	this->hero_anchorLeftY = anchorLeft.y;
+	this->hero_anchorLeftX = anchorLeft.x;
+	this->hero_anchorRightY = anchorRight.y;
+	this->hero_anchorRightX = anchorRight.x;
+
+	CCLOG("Arm Position X %d",hero_weaponRightx);
+	CCLOG("Arm Position Y %d",hero_weaponyRight);
+
+    CCLOG("hero_weaponRightx %d",hero_weaponRightx);
+    CCLOG("hero_weaponyRight %d",hero_weaponyRight);
+
+	this->heroArmSprite->setPosition(ccp(hero_weaponRightx,hero_weaponyRight));
+	this->heroArmSprite->setAnchorPoint(anchorLeft);
+
+	CCLOG("End createHeroArm");
+
 }
 
 void HeroSprite::performBandDeath()
@@ -122,5 +172,10 @@ void HeroSprite::runShootAnimation()
 float HeroSprite::getTotalArmor()
 {
 
+}
+
+CCPoint HeroSprite::calculateAnchorPoint(CCPoint anchorPos, CCPoint size)
+{
+	return ccp((1 - anchorPos.x/size.x), (1 - anchorPos.y/size.y));
 }
 

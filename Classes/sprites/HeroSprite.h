@@ -67,6 +67,7 @@ public:
 private:
     void createHeroBody();
     void createHeroArm();
+    CCPoint calculateAnchorPoint(CCPoint anchorPos, CCPoint size);
 
 };
 

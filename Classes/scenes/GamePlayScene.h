@@ -25,10 +25,16 @@ public:
 
 	CREATE_FUNC(GamePlayScene);
 
-	virtual bool onTouchBegan(Touch *touch, Event *unused_event);
-	virtual void onTouchMoved(Touch *touch, Event *unused_event);
-	virtual void onTouchEnded(Touch *touch, Event *unused_event);
-	virtual void onTouchCancelled(Touch *touch, Event *unused_event);
+	//virtual bool onTouchBegan(Touch *touch, Event *unused_event);
+	//virtual void onTouchMoved(Touch *touch, Event *unused_event);
+	//virtual void onTouchEnded(Touch *touch, Event *unused_event);
+	//virtual void onTouchCancelled(Touch *touch, Event *unused_event);
+
+	virtual void onTouchesBegan(const std::vector<Touch*>& touches, Event *unused_event);
+	virtual void onTouchesMoved(const std::vector<Touch*>& touches, Event *unused_event);
+	virtual void onTouchesEnded(const std::vector<Touch*>& touches, Event *unused_event);
+	virtual void onTouchesCancelled(const std::vector<Touch*>&touches, Event *unused_event);
+
 
 	typedef enum {
 		    GAME_STARTED,
@@ -38,10 +44,10 @@ public:
 		    GAME_PAUSED
 		} GameState;
 
-	CCPoint beginTouch;
 	CCPoint endTouch;
 	HeroSprite *heroSprite;
 
+    CCPoint beginTouch;
 	CCArray *activeEnemies;
 	float rotationAngle;
 	bool moved;
@@ -58,6 +64,11 @@ public:
 private:
 	void update(float dt);
 	void initBandPositions();
+	float getHeroRotationAngle();
+	float convertRadToDegree(float angle);
+	float convertDegreeToRad(float angle);
+	float getRotationAngle();
+
 
 
 };
