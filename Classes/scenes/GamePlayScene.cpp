@@ -8,6 +8,7 @@
 #include "GamePlayScene.h"
 #include "scenes/GameHud.h"
 #include "sprites/HeroSprite.h"
+#include "sprites/HeroShoot.h"
 
 using namespace cocos2d;
 
@@ -28,6 +29,7 @@ Scene* GamePlayScene::createScene(int levelNumber, int waveNumber)
 	scene->addChild(layer);
 	levelNumber = levelNumber;
 	waveNumber = waveNumber;
+
 
 	return scene;
 }
@@ -62,6 +64,7 @@ bool GamePlayScene::init()
 	this->addChild(this->heroSprite,34);
 	this->addChild(this->heroSprite->heroArmSprite,35);
 	this->setTouchEnabled(true);
+	this->beginTouch = ccp(0,160);
 	return true;
 }
 
@@ -70,30 +73,14 @@ void GamePlayScene::update(float dt)
 	//CCLOG("Update !!!");
 }
 
-float GamePlayScene::getRotationAngle()
-{
-
-	/*
-	float normaBegin = sqrtf(powf(self.beginTouch.x,2)+pow(self.beginTouch.y,2));
-	    float normaEnd = sqrtf(powf(self.endTouch.x,2)+powf(self.endTouch.y,2));
-	    float dotProduct = self.beginTouch.x * self.endTouch.x + self.beginTouch.y * self.endTouch.y;
-	    float angleDegrees = [self convertRadToDegree:acosf(dotProduct/(normaEnd*normaBegin))];
-	    if (self.endTouch.x < 0) {
-	        return 360 - angleDegrees;
-	    }else{
-	        return angleDegrees;
-	    }
-	 */
-	return 0.0;
-}
-
 void GamePlayScene::onTouchesBegan(const std::vector<Touch*>& touches, Event *unused_event)
 {
 	CCLOG("onTouchesBegan");
+	CCPoint location;
 
 	for (auto touch: touches){
 
-		CCPoint location = this->convertTouchToNodeSpace(touch);
+		location = this->convertTouchToNodeSpace(touch);
 
 		location.x = location.x - this->heroSprite->getPosition().x;
 		location.y = location.y - this->heroSprite->getPosition().y;
@@ -102,16 +89,15 @@ void GamePlayScene::onTouchesBegan(const std::vector<Touch*>& touches, Event *un
 		rotationAngle = this->getHeroRotationAngle();
 		moved = true;
 
-		//if ([[self bandSprite] guita1ReleaseFire] == YES) {
-		//	        [self fireLaser:[self convertTouchToNodeSpace:touch]];
-		//}
-
+		if (this->heroSprite->heroReleaseFire == true){
+			this->fireLaser(location);
+		}
 	}
 }
 
 void GamePlayScene::onTouchesMoved(const std::vector<Touch*>& touches, Event *unused_event)
 {
-	CCLOG("onTouchesMoved");
+	//CCLOG("onTouchesMoved");
 
 	for (auto touch: touches){
 
@@ -125,7 +111,7 @@ void GamePlayScene::onTouchesMoved(const std::vector<Touch*>& touches, Event *un
 		//this->heroSprite->heroReleaseFire = false;
 
 		if (this->heroSprite->heroReleaseFire == true) {
-			//[self fireLaser:[self convertTouchToNodeSpace:touch]];
+			this->fireLaser(location);
 		}
 	}
 }
@@ -141,9 +127,11 @@ void GamePlayScene::onTouchesEnded(const std::vector<Touch*>& touches, Event *un
 		endTouch = location;
 		rotationAngle = this->getHeroRotationAngle();
 		moved = true;
-		//if ([[self bandSprite] guita1ReleaseFire] == YES) {
-		//	[self fireLaser:[self convertTouchToNodeSpace:touch]];
-		//}
+
+		if (this->heroSprite->heroReleaseFire == true) {
+			this->fireLaser(location);
+		}
+
 	}
 }
 
@@ -167,21 +155,86 @@ float GamePlayScene::convertRadToDegree(float angle)
 	return (180/M_PI)*angle;
 }
 
-CCPoint fireCirclePoint()
+CCPoint GamePlayScene::fireCirclePoint()
 {
-	return 0;
+	CCPoint circle;
+	circle.x = 320 + 1000*sin(this->convertDegreeToRad(rotationAngle));
+	circle.x = 640 + 1000*cos(this->convertDegreeToRad(rotationAngle));
+	return circle;
 }
 
 
-void doEndFire(CCNode *node)
+void GamePlayScene::doEndFire(CCNode *node)
 {
-
+	CCLOG("doEndFire !!!");
+    ((HeroShoot *)node)->removeObject = true;
+    this->removeChild(node,true);
 }
 
 
-void fireLaser(CCPoint *touchEndPoint)
+void GamePlayScene::fireLaser(CCPoint touchEndPoint)
 {
+	CCLOG("fireLaser(CCPoint touchEndPoint)");
 
+	//CCDirector::sharedDirector()->getWinSize();
+
+	CCPoint shootPoint;
+	CCPoint targetPoint;
+	HeroShoot *laserbean;
+
+	targetPoint = this->fireCirclePoint();
+	laserbean = HeroShoot::create(CCString::create("misc/laser1.png"));
+
+	heroSprite->activeShoots.pushBack(laserbean);
+	CCLOG("Active shoot incerted !");
+	laserbean->setRotation(rotationAngle+90);
+	CCLOG("Rotation angle %f",rotationAngle);
+	heroSprite->heroArmSprite->setRotation(rotationAngle+270);
+
+
+
+	if ((rotationAngle <= 360) && (rotationAngle >= 180)) {
+		//rotate guitar 1
+
+		if (heroSprite->isHeroDeath == false){
+			heroSprite->heroArmSprite->setFlipX(true);
+			heroSprite->heroArmSprite->setFlipY(true);
+			heroSprite->heroArmSprite->setPosition(ccp(heroSprite->hero_weaponLeftx,heroSprite->hero_weaponyLeft));
+			heroSprite->setAnchorPoint(ccp(heroSprite->hero_anchorLeftX,heroSprite->hero_anchorLeftY));
+
+		}
+		//shootPoint = ccp([[self bandSprite]guita1_weaponLeftx],[[self bandSprite] guita1_weaponyLeft] - 30);
+		shootPoint = ccp(this->heroSprite->hero_weaponLeftx,this->heroSprite->hero_weaponyLeft - 30);
+
+	}else{
+
+		if (heroSprite->isHeroDeath == false){
+			heroSprite->heroArmSprite->setFlipX(false);
+			heroSprite->heroArmSprite->setFlipY(false);
+			heroSprite->heroArmSprite->setPosition(ccp(heroSprite->hero_weaponRightx,heroSprite->hero_weaponyRight));
+			heroSprite->setAnchorPoint(ccp(heroSprite->hero_anchorRightX,heroSprite->hero_anchorRightY));
+		}
+		shootPoint = ccp(this->heroSprite->hero_weaponRightx + 10,this->heroSprite->hero_weaponyRight - 30);
+		//shootPoint = ccp([[self bandSprite]guita1_weaponRightx] + 10, [[self bandSprite] guita1_weaponyRight] - 30);
+	}
+
+	CCLOG("Arm position x %f",heroSprite->heroArmSprite->getPositionX());
+	CCLOG("Arm position y %f",heroSprite->heroArmSprite->getPositionY());
+
+
+	if (heroSprite->isHeroDeath == false){
+		laserbean->setPosition(shootPoint);
+		this->addChild(laserbean);
+		laserbean->stopAllActions();
+
+		CCFiniteTimeAction *actionFire = CCMoveTo::create(0.5,targetPoint);
+		CCFiniteTimeAction *endFireCallBack = CCCallFuncN::create(CC_CALLBACK_1(GamePlayScene::doEndFire, this));
+		CCSequence *actionSequence = CCSequence::create(actionFire,endFireCallBack,NULL);
+
+		laserbean->runAction(actionSequence);
+		this->heroSprite->runShootAnimation();
+
+	}
 }
 
 float GamePlayScene::getHeroRotationAngle()
@@ -193,8 +246,10 @@ float GamePlayScene::getHeroRotationAngle()
 	float angleDegrees = this->convertRadToDegree(acosf(dotProduct/(normaEnd*normaBegin)));
 
 	if (endTouch.x < 0) {
+		CCLOG("Returning rotation angle %f",360 - angleDegrees);
 		return 360 - angleDegrees;
 	}else{
+		CCLOG("Returning rotation angle %f",angleDegrees);
 		return angleDegrees;
 	}
 
@@ -219,7 +274,3 @@ void pauseGame()
 {
 
 }
-
-
-
-

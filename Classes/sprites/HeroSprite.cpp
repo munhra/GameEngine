@@ -41,6 +41,8 @@ HeroSprite* HeroSprite::create()
 {
 	HeroSprite *hero = new HeroSprite();
 	if (hero && hero->init()) {
+		hero->isHeroDeath = false;
+		hero->heroReleaseFire = true;
 		hero->createHeroBody();
 		hero->createHeroArm();
 		hero->autorelease();

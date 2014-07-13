@@ -25,11 +25,6 @@ public:
 
 	CREATE_FUNC(GamePlayScene);
 
-	//virtual bool onTouchBegan(Touch *touch, Event *unused_event);
-	//virtual void onTouchMoved(Touch *touch, Event *unused_event);
-	//virtual void onTouchEnded(Touch *touch, Event *unused_event);
-	//virtual void onTouchCancelled(Touch *touch, Event *unused_event);
-
 	virtual void onTouchesBegan(const std::vector<Touch*>& touches, Event *unused_event);
 	virtual void onTouchesMoved(const std::vector<Touch*>& touches, Event *unused_event);
 	virtual void onTouchesEnded(const std::vector<Touch*>& touches, Event *unused_event);
@@ -67,7 +62,10 @@ private:
 	float getHeroRotationAngle();
 	float convertRadToDegree(float angle);
 	float convertDegreeToRad(float angle);
-	float getRotationAngle();
+	CCPoint fireCirclePoint();
+	void fireLaser(CCPoint touchEndPoint);
+	void doEndFire(CCNode *node);
+
 
 
 

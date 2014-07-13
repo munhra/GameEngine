@@ -9,6 +9,8 @@
 #define HEROSPRITE_H_
 
 #include "cocos2d.h"
+#include "sprites/HeroShoot.h"
+
 using namespace cocos2d;
 
 class HeroSprite: public CCSprite{
@@ -17,8 +19,8 @@ public:
 	virtual ~HeroSprite();
 
 
-
-	CCArray *activeShoots;
+	//Vector<CCSprite*> activeShoots;
+	Vector<HeroShoot*> activeShoots;
 
 
 	// how many points left from the armor, this will be provided by the drummer type
