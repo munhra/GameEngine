@@ -43,7 +43,10 @@ public:
 	HeroSprite *heroSprite;
 
     CCPoint beginTouch;
-	CCArray *activeEnemies;
+	//CCArray *activeEnemies;
+	Vector<HeroShoot*> activeEnemies;
+
+
 	float rotationAngle;
 	bool moved;
 	CCParticleSystem *heroParticle;
@@ -65,6 +68,7 @@ private:
 	CCPoint fireCirclePoint();
 	void fireLaser(CCPoint touchEndPoint);
 	void doEndFire(CCNode *node);
+	bool shootCollidedToTarget();
 
 
 

@@ -140,8 +140,21 @@ void GamePlayScene::onTouchesCancelled(const std::vector<Touch*>&touches, Event 
 	CCLOG("onTouchesCancelled");
 }
 
-bool shootCollidedToTarget()
+bool GamePlayScene::shootCollidedToTarget()
 {
+	CCRect targetRect;
+	CCRect shootRect;
+	CCRect heroRect = this->heroSprite->getBoundingBox();
+
+	for (auto enemy: this->activeEnemies){
+        //targetRect = [[[[self activeEnemies] objectAtIndex:j] enemySprite] boundingBox];
+		//()
+	}
+
+	for (auto enemy: this->activeEnemies){
+
+	}
+
 	return true;
 }
 

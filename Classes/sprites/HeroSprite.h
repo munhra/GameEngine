@@ -18,10 +18,7 @@ public:
 	HeroSprite();
 	virtual ~HeroSprite();
 
-
-	//Vector<CCSprite*> activeShoots;
 	Vector<HeroShoot*> activeShoots;
-
 
 	// how many points left from the armor, this will be provided by the drummer type
 	float heroArmor;
