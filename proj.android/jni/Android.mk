@@ -16,6 +16,9 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/enemies/Enemy.cpp \
                    ../../Classes/enemies/EnemyParams.cpp \
                    ../../Classes/enemies/DefaultEnemy.cpp \
+                   ../../Classes/util/UniversalInfo.cpp \
+                   ../../Classes/level/LevelController.cpp \
+                   ../../Classes/level/GameLevel.cpp \
                    ../../Classes/HelloWorldScene.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes

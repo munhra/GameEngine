@@ -273,14 +273,18 @@ void removeEnemySprite(CCSprite *enemySprite)
 
 }
 
-void addEnemySprite(CCSprite *enemy)
+void GamePlayScene::addEnemySprite(CCSprite *enemy)
 {
 
 }
 
-bool isGameOver()
+bool GamePlayScene::isGameOver()
 {
-	return false;
+	if (this->state == GAME_OVER){
+		return true;
+	}else{
+		return false;
+	}
 }
 
 void pauseGame()

@@ -18,7 +18,7 @@ Enemy::~Enemy() {
 
 
 Enemy* Enemy::createWithStartPosition(CCPoint position, double actionTime,
-		CCNode *scnDelegate, EnemyParams *params, EnemyPositions defPositions, CCPoint ShootEndPosition)
+		GamePlayScene *scnDelegate, EnemyParams *params, EnemyPositions defPositions, CCPoint ShootEndPosition)
 {
 	Enemy *enemy = new Enemy();
 	if (enemy && enemy->init()) {

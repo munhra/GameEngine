@@ -11,6 +11,7 @@
 #include "cocos2d.h"
 #include "sprites/HeroShoot.h"
 #include "enemies/EnemyParams.h"
+#include "scenes/GamePlayScene.h"
 
 using namespace cocos2d;
 
@@ -38,7 +39,7 @@ public:
 
 
 	static Enemy* createWithStartPosition(CCPoint position, double actionTime,
-			CCNode *scnDelegate, EnemyParams *params, EnemyPositions defPositions, CCPoint ShootEndPosition);
+			GamePlayScene *scnDelegate, EnemyParams *params, EnemyPositions defPositions, CCPoint ShootEndPosition);
 
 	static Enemy* create();
 
@@ -86,7 +87,7 @@ public:
 
 	int scorePoints;
 
-	CCObject *delegate;
+	GamePlayScene *delegate;
 
 	CCString *name;
 

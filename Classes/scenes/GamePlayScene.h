@@ -30,6 +30,8 @@ public:
 	virtual void onTouchesEnded(const std::vector<Touch*>& touches, Event *unused_event);
 	virtual void onTouchesCancelled(const std::vector<Touch*>&touches, Event *unused_event);
 
+	bool isGameOver();
+	void addEnemySprite(CCSprite *enemy);
 
 	typedef enum {
 		    GAME_STARTED,
@@ -43,7 +45,6 @@ public:
 	HeroSprite *heroSprite;
 
     CCPoint beginTouch;
-	//CCArray *activeEnemies;
 	Vector<HeroShoot*> activeEnemies;
 
 
